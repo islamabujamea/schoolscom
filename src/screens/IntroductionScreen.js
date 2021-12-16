@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   View,
   Text,
+  Platform,
 } from 'react-native';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 const {width: width, height: height} = Dimensions.get('window');
@@ -66,10 +67,15 @@ export default class IntroductionScreen extends Component {
   _renderItem({item, index}) {
     return (
       <View style={{marginTop: width * 0.1}}>
-        <item.image
-          width={width * 0.85}
-          style={{transform: [{rotate: '180deg'}], alignSelf: 'center'}}
-        />
+        {Platform.OS == 'ios' && (
+          <item.image
+            width={width * 0.85}
+            style={{transform: [{rotate: '180deg'}], alignSelf: 'center'}}
+          />
+        )}
+        {Platform.OS !== 'ios' && (
+          <item.image width={width * 0.85} style={{alignSelf: 'center'}} />
+        )}
         <View
           style={{
             width: width * 0.85,

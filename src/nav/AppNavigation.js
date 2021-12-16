@@ -1,5 +1,6 @@
 import 'react-native-gesture-handler';
 import React, {Component} from 'react';
+import {BackHandler} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 
@@ -16,6 +17,17 @@ import ResetPasswordDone from '../screens/ResetPasswordDone';
 import Home from '../screens/Home';
 
 export default class AppNavigator extends Component {
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    return true; // Do nothing when back button is pressed
+  };
   render() {
     const MainNavigatorNav = createAppContainer(
       createStackNavigator({

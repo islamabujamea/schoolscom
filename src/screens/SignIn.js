@@ -9,6 +9,7 @@ import {
   View,
   TouchableOpacity,
   Text,
+  Platform,
 } from 'react-native';
 import LinkedInModal from 'react-native-linkedin';
 const {width: width, height: height} = Dimensions.get('window');
@@ -52,10 +53,15 @@ export default class SignIn extends Component {
               <BackIcon style={{alignSelf: 'flex-start'}} />
             </View>
           </TouchableOpacity>
-          <SignInImg
-            width={width * 0.9}
-            style={{alignSelf: 'center', transform: [{rotate: '180deg'}]}}
-          />
+          {Platform.OS == 'ios' && (
+            <SignInImg
+              width={width * 0.9}
+              style={{alignSelf: 'center', transform: [{rotate: '180deg'}]}}
+            />
+          )}
+          {Platform.OS !== 'ios' && (
+            <SignInImg width={width * 0.9} style={{alignSelf: 'center'}} />
+          )}
           {/* //read more about it  */}
           <View style={styles.container}>
             <LinkedInModal

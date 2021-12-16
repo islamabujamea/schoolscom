@@ -44,24 +44,37 @@ export default class SignInForm extends Component {
     var text = this.state.email;
     console.log(text);
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-    if (reg.test(text) === false) {
-      console.log('Email is Not Correct');
-      this.setState({emailErr: true});
-      return false;
+    if (text != '') {
+      if (reg.test(text) === false) {
+        console.log('Email is Not Correct');
+        this.setState({emailErr: true});
+        return false;
+      } else {
+        this.setState({emailErr: false});
+        console.log('Email is Correct');
+      }
     } else {
-      this.setState({emailErr: false});
-      console.log('Email is Correct');
+      this.setState({
+        emailErr: true,
+        emailErrTxt: 'Email cannot be blank',
+      });
     }
   }
-
   validatePassword() {
     var text = this.state.password;
-    if (text.length >= 6) {
-      this.setState({passErr: false});
-      return false;
+    if (text != '') {
+      if (text.length >= 6) {
+        this.setState({passErr: false});
+        return false;
+      } else {
+        this.setState({
+          passErr: true,
+        });
+      }
     } else {
       this.setState({
         passErr: true,
+        passErrTxt: 'Password cannot be blank',
       });
     }
   }
@@ -138,6 +151,10 @@ export default class SignInForm extends Component {
                       },
                     },
                   }}
+                  onSubmitEditing={() => {
+                    this.passInput.focus();
+                  }}
+                  blurOnSubmit={false}
                   selectionColor={blue}
                   underlineColor={gray}
                   activeUnderlineColor={blue}
@@ -157,6 +174,9 @@ export default class SignInForm extends Component {
                 <Lock style={styles.Icon} />
                 <TextInput
                   label="Password"
+                  ref={input => {
+                    this.passInput = input;
+                  }}
                   value={this.state.password}
                   onChangeText={text =>
                     this.setState({
@@ -218,7 +238,8 @@ export default class SignInForm extends Component {
                 this.state.emailErr == false &&
                 this.state.passErr == false &&
                 this.state.email != '' &&
-                this.state.password != ''
+                this.state.password != '' &&
+                this.state.showProgress == false
                   ? false
                   : true
               }>

@@ -59,35 +59,41 @@ export default class SignUpForm extends Component {
     var text = this.state.email;
     console.log(text);
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-    if (reg.test(text) === false) {
-      console.log('Email is Not Correct');
-      this.setState({emailErr: true});
-      return false;
-    } else {
-      this.setState({emailErr: false});
-      console.log('Email is Correct');
+    if (text != '') {
+      if (reg.test(text) === false) {
+        console.log('Email is Not Correct');
+        this.setState({emailErr: true});
+        return false;
+      } else {
+        this.setState({emailErr: false});
+        console.log('Email is Correct');
+      }
     }
   }
 
   validateName() {
     var text = this.state.name;
     console.log(text.length);
-    if (text.length >= 2 && text.length < 50) {
-      this.setState({nameErr: false});
-      return false;
-    } else {
-      this.setState({nameErr: true});
+    if (text != '') {
+      if (text.length >= 2 && text.length < 50) {
+        this.setState({nameErr: false});
+        return false;
+      } else {
+        this.setState({nameErr: true});
+      }
     }
   }
   validatePassword() {
     var text = this.state.password;
-    if (text.length >= 6) {
-      this.setState({passErr: false});
-      return false;
-    } else {
-      this.setState({
-        passErr: true,
-      });
+    if (text != '') {
+      if (text.length >= 6) {
+        this.setState({passErr: false});
+        return false;
+      } else {
+        this.setState({
+          passErr: true,
+        });
+      }
     }
   }
   async SignUpHandler() {
@@ -174,6 +180,10 @@ export default class SignUpForm extends Component {
                   activeUnderlineColor={blue}
                   onBlur={text => this.validateEmail()}
                   error={this.state.emailErr}
+                  onSubmitEditing={() => {
+                    this.nameInput.focus();
+                  }}
+                  blurOnSubmit={false}
                 />
               </View>
               <HelperText
@@ -189,6 +199,13 @@ export default class SignUpForm extends Component {
                 <TextInput
                   keyboardType="name-phone-pad"
                   label="Full Name"
+                  ref={input => {
+                    this.nameInput = input;
+                  }}
+                  onSubmitEditing={() => {
+                    this.passInput.focus();
+                  }}
+                  blurOnSubmit={false}
                   value={this.state.name}
                   onChangeText={text => this.setState({name: text})}
                   style={styles.TextInput}
@@ -219,6 +236,9 @@ export default class SignUpForm extends Component {
                 <Lock style={styles.Icon} />
                 <TextInput
                   label="Password"
+                  ref={input => {
+                    this.passInput = input;
+                  }}
                   value={this.state.password}
                   onChangeText={text =>
                     this.setState({
@@ -288,7 +308,8 @@ export default class SignUpForm extends Component {
                 this.state.email != '' &&
                 this.state.name != '' &&
                 this.state.password != '' &&
-                this.state.checked == true
+                this.state.checked == true &&
+                this.state.showProgress == false
                   ? false
                   : true
               }>

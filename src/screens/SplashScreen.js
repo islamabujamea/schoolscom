@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import {StatusBar, ScrollView, View, Text, Dimensions} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const {width: width, height: height} = Dimensions.get('window');
 import {BoldFont, RegularFont} from '../assets/fonts/index';
 import {blue, white} from '../assets/colors';
-
+var redirectID;
 export default class SplashScreen extends Component {
   async UNSAFE_componentWillMount() {
     this.loginInterval = setInterval(() => {
@@ -12,12 +13,12 @@ export default class SplashScreen extends Component {
   }
 
   async renderLoading() {
-    // const userId = await AsyncStorage.getItem('@Rehab:userId');
-    // if (userId == null) {
-    redirectID = 'IntroductionScreen';
-    // } else {
-    //   redirectID = 'Home';
-    // }
+    const userId = await AsyncStorage.getItem('@eKard:userId');
+    if (userId == null) {
+      redirectID = 'IntroductionScreen';
+    } else {
+      redirectID = 'Home';
+    }
     clearInterval(this.loginInterval);
     this.props.navigation.navigate(redirectID);
   }

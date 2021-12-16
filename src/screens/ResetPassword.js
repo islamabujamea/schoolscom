@@ -43,63 +43,73 @@ export default class ResetPassword extends Component {
   }
   validatePassword(mode) {
     var text = mode == 1 ? this.state.password : this.state.confirmPassword;
-    if (text.length >= 6) {
-      if (mode == 1) {
-        this.setState({passErr: false});
+    if (text != '') {
+      if (text.length >= 6) {
+        if (mode == 1) {
+          this.setState({passErr: false});
+        } else {
+          this.setState({passErr2: false});
+        }
+        return false;
       } else {
-        this.setState({passErr2: false});
-      }
-      return false;
-    } else {
-      if (mode == 1) {
-        this.setState({passErr: true});
-      } else {
-        this.setState({passErr2: true});
+        if (mode == 1) {
+          this.setState({passErr: true});
+        } else {
+          this.setState({passErr2: true});
+        }
       }
     }
   }
   async ResetPasswordHandler() {
     var id = await AsyncStorage.getItem('@eKard:userId');
     var token = await AsyncStorage.getItem('@eKard:token');
-    this.setState({
-      showProgress: !this.state.showProgress,
-    });
-    try {
-      const response = await fetch(
-        config.DOMAIN + 'api/users/edit/' + id + '.json',
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + token,
+
+    if (this.state.password == this.state.confirmPassword) {
+      this.setState({
+        showProgress: !this.state.showProgress,
+      });
+      try {
+        const response = await fetch(
+          config.DOMAIN + 'api/users/edit/' + id + '.json',
+          {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + token,
+            },
+            body: JSON.stringify({
+              password: this.state.password,
+            }),
           },
-          body: JSON.stringify({
-            password: this.state.password,
-          }),
-        },
-      );
-      let res = await response.json();
-      console.log(response.url);
-      console.log('resnn', res);
-      if (res.message.error) {
+        );
+        let res = await response.json();
+        console.log(response.url);
+        console.log('resnn', res);
+        if (res.message.error) {
+          this.setState({
+            errorTxt: res.message.desc,
+            error: !this.state.error,
+            showProgress: !this.state.showProgress,
+          });
+        } else {
+          this.setState({
+            showProgress: !this.state.showProgress,
+          });
+          this.props.navigation.navigate('ResetPasswordDone');
+        }
+      } catch (error) {
         this.setState({
-          errorTxt: res.message.desc,
+          errorTxt:
+            'Oops! There was a problem connecting to the server. The server may not exist or it is unavailable at this time',
           error: !this.state.error,
           showProgress: !this.state.showProgress,
         });
-      } else {
-        this.setState({
-          showProgress: !this.state.showProgress,
-        });
-        this.props.navigation.navigate('ResetPasswordDone');
       }
-    } catch (error) {
+    } else {
       this.setState({
-        errorTxt:
-          'Oops! There was a problem connecting to the server. The server may not exist or it is unavailable at this time',
+        errorTxt: 'Passwords do not match',
         error: !this.state.error,
-        showProgress: !this.state.showProgress,
       });
     }
   }
@@ -128,6 +138,10 @@ export default class ResetPassword extends Component {
                       password: text,
                     })
                   }
+                  onSubmitEditing={() => {
+                    this.passInput.focus();
+                  }}
+                  blurOnSubmit={false}
                   style={styles.TextInput}
                   theme={{
                     fonts: {
@@ -170,6 +184,9 @@ export default class ResetPassword extends Component {
                 <Lock style={styles.Icon} />
                 <TextInput
                   label="Confirm new password"
+                  ref={input => {
+                    this.passInput = input;
+                  }}
                   value={this.state.confirmPassword}
                   onChangeText={text =>
                     this.setState({
@@ -221,9 +238,10 @@ export default class ResetPassword extends Component {
               disabled={
                 this.state.passErr2 == false &&
                 this.state.passErr == false &&
-                this.state.password == this.state.confirmPassword &&
+                // this.state.password == this.state.confirmPassword &&
                 this.state.password != '' &&
-                this.state.confirmPassword != ''
+                this.state.confirmPassword != '' &&
+                this.state.showProgress == false
                   ? false
                   : true
               }>
@@ -232,7 +250,7 @@ export default class ResetPassword extends Component {
                 txtColor={
                   this.state.passErr2 == false &&
                   this.state.passErr == false &&
-                  this.state.password == this.state.confirmPassword &&
+                  // this.state.password == this.state.confirmPassword &&
                   this.state.password != '' &&
                   this.state.confirmPassword != ''
                     ? white
@@ -241,7 +259,7 @@ export default class ResetPassword extends Component {
                 backgroundColor={
                   this.state.passErr2 == false &&
                   this.state.passErr == false &&
-                  this.state.password == this.state.confirmPassword &&
+                  // this.state.password == this.state.confirmPassword &&
                   this.state.password != '' &&
                   this.state.confirmPassword != ''
                     ? blue
@@ -250,7 +268,7 @@ export default class ResetPassword extends Component {
                 borderColor={
                   this.state.passErr2 == false &&
                   this.state.passErr == false &&
-                  this.state.password == this.state.confirmPassword &&
+                  // this.state.password == this.state.confirmPassword &&
                   this.state.password != '' &&
                   this.state.confirmPassword != ''
                     ? blue

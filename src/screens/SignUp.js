@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   View,
   Text,
+  Platform,
 } from 'react-native';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 const {width: width, height: height} = Dimensions.get('window');
@@ -41,10 +42,15 @@ export default class SignUp extends Component {
               <BackIcon style={{alignSelf: 'flex-start'}} />
             </View>
           </TouchableOpacity>
-          <SignUpImg
-            width={width * 0.9}
-            style={{alignSelf: 'center', transform: [{rotate: '180deg'}]}}
-          />
+          {Platform.OS == 'ios' && (
+            <SignUpImg
+              width={width * 0.9}
+              style={{alignSelf: 'center', transform: [{rotate: '180deg'}]}}
+            />
+          )}
+          {Platform.OS !== 'ios' && (
+            <SignUpImg width={width * 0.9} style={{alignSelf: 'center'}} />
+          )}
           <View
             style={{
               width: width * 0.8,

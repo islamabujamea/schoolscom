@@ -152,7 +152,9 @@ export default class ForgetPassword extends Component {
             <TouchableOpacity
               onPress={() => this.ForgetPasswordHandler()}
               disabled={
-                this.state.emailErr == false && this.state.email != ''
+                this.state.emailErr == false &&
+                this.state.email != '' &&
+                this.state.showProgress == false
                   ? false
                   : true
               }>
