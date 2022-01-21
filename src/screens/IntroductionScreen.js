@@ -20,13 +20,11 @@ import slider2 from '../images/slider2.svg';
 import slider3 from '../images/slider3.svg';
 import slider4 from '../images/slider4.svg';
 import slider5 from '../images/slider5.svg';
-import BackIcon from '../images/circleBack.svg';
-import BackIcon2 from '../images/back.svg';
-import {TouchableOpacity} from 'react-native';
 
 export default class IntroductionScreen extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       activeIndex: 0,
       carouselItems: [

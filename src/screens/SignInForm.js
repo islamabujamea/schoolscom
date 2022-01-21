@@ -29,7 +29,7 @@ export default class SignInForm extends Component {
       emailErrTxt: 'Incorrect email format',
       password: '',
       passErr: false,
-      passErrTxt: 'Password must be have at least 6 characters long',
+      passErrTxt: 'Password must have at least 6 characters',
       error: false,
       errorTxt: '',
       showProgress: false,
@@ -69,12 +69,13 @@ export default class SignInForm extends Component {
       } else {
         this.setState({
           passErr: true,
+          errorTxt: 'Password must have at least 6 characters',
         });
       }
     } else {
       this.setState({
         passErr: true,
-        passErrTxt: 'Password cannot be blank',
+        errorTxt: 'Password cannot be blank',
       });
     }
   }
@@ -108,7 +109,7 @@ export default class SignInForm extends Component {
           error: res.message.error,
           showProgress: !this.state.showProgress,
         });
-        await AsyncStorage.setItem('@eKard:userId', res.json.id.toString());
+        await AsyncStorage.setItem('@eKard:uId', res.json.id.toString());
         await AsyncStorage.setItem('@eKard:token', res.json.token);
         this.props.navigation.navigate('Home');
       }
@@ -209,15 +210,15 @@ export default class SignInForm extends Component {
                   }
                 />
               </View>
-              <HelperText
+              {/* <HelperText
                 type="error"
                 visible={this.state.passErr}
                 style={styles.helperTxt}>
                 {this.state.passErrTxt}
-              </HelperText>
+              </HelperText> */}
               <HelperText
                 type="error"
-                visible={this.state.error}
+                visible={this.state.error || this.state.passErr}
                 style={{fontFamily: RegularFont}}>
                 {this.state.errorTxt}
               </HelperText>
@@ -285,11 +286,13 @@ const styles = StyleSheet.create({
     width: width * 0.9,
     alignSelf: 'center',
     paddingTop: 20,
+    // backgroundColor: 'red',
   },
   title: {
     fontSize: 22,
     fontFamily: BoldFont,
-    padding: 10,
+    paddingTop: 10,
+    // paddingBottom: 10,
   },
   termsTxt: {
     fontSize: 10,
@@ -297,22 +300,36 @@ const styles = StyleSheet.create({
     color: blue,
   },
   InputView: {
-    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    width: width * 0.9,
   },
   Icon: {
-    marginTop: 5,
+    // marginTop: 5,
+    // borderBottomWidth: 1,
+    // borderBottomColor: gray,
+    // paddingBottom: 63,
+    width: width * 0.07,
   },
+  // InputView: {
+  //   flex: 1,
+  //   flexDirection: 'row',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
+  // Icon: {
+  //   marginTop: 5,
+  // },
   TextInput: {
     backgroundColor: white,
-    flex: 1,
+    // flex: 1,
     fontSize: 16,
-    width: '100%',
+    // width: '80%',
+    width: width * 0.83,
   },
   checkTxt: {
-    padding: 10,
+    // padding: 10,
     marginBottom: width * 0.66,
   },
   checkView: {
@@ -326,7 +343,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   viewMargin: {
-    marginVertical: 3,
+    // marginVertical: 1,
   },
   flex: {
     flex: 1,

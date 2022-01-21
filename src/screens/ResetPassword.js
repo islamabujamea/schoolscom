@@ -25,11 +25,11 @@ export default class ResetPassword extends Component {
     this.state = {
       password: '',
       passErr: false,
-      passErrTxt: 'Password must be have at least 6 characters long',
+      passErrTxt: 'Password must have at least 6 characters',
       showEye: false,
       confirmPassword: '',
       passErr2: false,
-      passErrTxt2: 'Password must be have at least 6 characters long',
+      passErrTxt2: 'Password must have at least 6 characters',
       showEye2: false,
       error: false,
       errorTxt: '',
@@ -63,7 +63,7 @@ export default class ResetPassword extends Component {
   async ResetPasswordHandler() {
     var id = await AsyncStorage.getItem('@eKard:userId');
     var token = await AsyncStorage.getItem('@eKard:token');
-
+    console.log('to', token);
     if (this.state.password == this.state.confirmPassword) {
       this.setState({
         showProgress: !this.state.showProgress,

@@ -13,7 +13,8 @@ export default class SplashScreen extends Component {
   }
 
   async renderLoading() {
-    const userId = await AsyncStorage.getItem('@eKard:userId');
+    var userId = await AsyncStorage.getItem('@eKard:token');
+    console.log('user', userId);
     if (userId == null) {
       redirectID = 'IntroductionScreen';
     } else {

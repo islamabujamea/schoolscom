@@ -69,16 +69,17 @@ export default class ForgetPassword extends Component {
       let res = await response.json();
       console.log(response.url);
       console.log('resnn', res);
-      if (res.error) {
+      if (res.code == 403) {
         this.setState({
           errorTxt: res.message,
           error: res.error,
-          showProgress: !this.state.showProgress,
+          showProgress: false,
         });
-      } else {
+      }
+      if (!res.error) {
         this.setState({
           error: res.error,
-          showProgress: !this.state.showProgress,
+          showProgress: false,
         });
         await AsyncStorage.setItem('@eKard:userId', res.id.toString());
         await AsyncStorage.setItem('@eKard:RestPass', '1');
@@ -90,7 +91,7 @@ export default class ForgetPassword extends Component {
       this.setState({
         errorTxt: 'Maximum OTP attempts per user are exceeded.',
         error: !this.state.error,
-        showProgress: !this.state.showProgress,
+        showProgress: false,
       });
     }
   }
@@ -191,17 +192,19 @@ const styles = StyleSheet.create({
     width: width * 0.9,
     alignSelf: 'center',
     paddingTop: 20,
+    // backgroundColor: 'red',
   },
   title: {
     fontSize: 22,
     fontFamily: BoldFont,
-    padding: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   termsTxt: {
     fontSize: 10,
     fontFamily: RegularFont,
     color: gray,
-    paddingLeft: 10,
+    // paddingLeft: 10,
   },
   InputView: {
     flex: 1,

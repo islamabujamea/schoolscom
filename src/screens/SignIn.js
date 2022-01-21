@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import LinkedInModal from 'react-native-linkedin';
 const {width: width, height: height} = Dimensions.get('window');
-import {black, blue, lightBlue} from '../assets/colors/index';
+import {black, blue, e} from '../assets/colors/index';
 import {BoldFont, RegularFont} from '../assets/fonts/index';
 import ButtonBox from '../components/Button';
 import SignInImg from '../images/SignIn.svg';
@@ -38,6 +38,7 @@ export default class SignIn extends Component {
       />
     );
   }
+
   render() {
     return (
       <ScrollView style={{backgroundColor: '#fff'}}>
@@ -63,7 +64,7 @@ export default class SignIn extends Component {
             <SignInImg width={width * 0.9} style={{alignSelf: 'center'}} />
           )}
           {/* //read more about it  */}
-          <View style={styles.container}>
+          {/* <View style={styles.container}>
             <LinkedInModal
               ref={this.linkedRef}
               clientSecret={'TzhACuWkhfwxz9yX'}
@@ -71,7 +72,7 @@ export default class SignIn extends Component {
               redirectUri={'https://oauth.pstmn.io/v1/callback'}
               onSuccess={token => console.log(token)}
             />
-          </View>
+          </View> */}
           <View
             style={{
               width: width * 0.8,

@@ -37,11 +37,17 @@ export default class Verification extends Component {
     }
   }
   async checkCode(code) {
-    console.log('code ..', code);
     this.setState({
-      showProgress: !this.state.showProgress,
+      showProgress: true,
     });
-    var id = await AsyncStorage.getItem('@eKard:userId');
+    var id;
+    var RestPass = await AsyncStorage.getItem('@eKard:RestPass');
+    if (RestPass == null) {
+      id = await AsyncStorage.getItem('@eKard:uId');
+    } else {
+      id = await AsyncStorage.getItem('@eKard:userId');
+    }
+
     try {
       const response = await fetch(
         config.DOMAIN + 'api/users/verify/' + id + '.json',
@@ -58,25 +64,15 @@ export default class Verification extends Component {
       );
       let res = await response.json();
       console.log(response.url);
-      console.log('resnn', res);
+      console.log('res', res);
       this.setState({
-        showProgress: !this.state.showProgress,
+        showProgress: false,
       });
-      if (!res.error) {
-        await AsyncStorage.setItem('@eKard:token', res.token);
-        var RestPass = await AsyncStorage.getItem('@eKard:RestPass');
-        console.log('REser', RestPass);
-        if (RestPass != null) {
-          await AsyncStorage.clear();
-          this.props.navigation.navigate('ResetPassword');
-        } else {
-          this.props.navigation.navigate('Home');
-        }
-      } else {
+
+      if (res.code == 500 || res.error) {
         this.setState({
           backColor: 'red',
-          codeIncorrect: res.desc,
-          showProgress: !this.state.showProgress,
+          codeIncorrect: res.code == 500 ? res.message : res.desc,
         });
         this.refs.codeInputRef.clear();
         setInterval(() => {
@@ -84,11 +80,21 @@ export default class Verification extends Component {
             backColor: '',
             codeIncorrect: '',
           });
-        }, 1500);
+        }, 3000);
+      }
+
+      if (!res.error) {
+        await AsyncStorage.setItem('@eKard:token', res.token);
+
+        if (RestPass != null) {
+          this.props.navigation.navigate('ResetPassword');
+        } else {
+          this.props.navigation.navigate('Home');
+        }
       }
     } catch (error) {
       this.setState({
-        showProgress: !this.state.showProgress,
+        showProgress: false,
         backColor: 'red',
         codeIncorrect: 'Maximum OTP attempts per user are exceeded.',
       });
@@ -102,41 +108,45 @@ export default class Verification extends Component {
     }
   }
   async ResendCode() {
-    var id = await AsyncStorage.getItem('@eKard:userId');
-    this.setState({
-      showProgress: !this.state.showProgress,
-    });
-    try {
-      const response = await fetch(
-        config.DOMAIN + 'api/users/generatecode/' + id + '.json',
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-      let res = await response.json();
-      console.log(response.url);
-      console.log('resnn', res);
-      if (!res.message.error) {
-        this.setState({
-          codeIncorrect: res.message.desc,
-          showProgress: !this.state.showProgress,
-        });
-      } else {
-        this.setState({
-          codeSent: !this.state.codeSent,
-          showProgress: !this.state.showProgress,
-        });
-      }
-    } catch (error) {
-      this.setState({
-        codeIncorrect: 'Maximum OTP attempts per user are exceeded.',
-        showProgress: !this.state.showProgress,
-      });
-    }
+    this.props.navigation.navigate('ForgetPassword');
+    // var id = await AsyncStorage.getItem('@eKard:userId');
+    // var token = await AsyncStorage.getItem('@eKard:token');
+    // console.log('resnn', token);
+    // this.setState({
+    //   showProgress: !this.state.showProgress,
+    // });
+    // try {
+    //   const response = await fetch(
+    //     config.DOMAIN + 'api/users/generatecode/' + id,
+    //     {
+    //       method: 'POST',
+    //       headers: {
+    //         Accept: 'application/json',
+    //         'Content-Type': 'application/json',
+    //         Authorization: 'Bearer ' + token,
+    //       },
+    //     },
+    //   );
+    //   let res = await response.json();
+    //   console.log(response.url);
+    //   console.log('resnn', res);
+    //   if (res.message.error) {
+    //     this.setState({
+    //       codeIncorrect: res.message.desc,
+    //       showProgress: !this.state.showProgress,
+    //     });
+    //   } else {
+    //     this.setState({
+    //       codeSent: !this.state.codeSent,
+    //       showProgress: !this.state.showProgress,
+    //     });
+    //   }
+    // } catch (error) {
+    //   this.setState({
+    //     codeIncorrect: 'Maximum OTP attempts per user are exceeded.',
+    //     showProgress: !this.state.showProgress,
+    //   });
+    // }
   }
   render() {
     return (
@@ -182,7 +192,7 @@ export default class Verification extends Component {
                   paddingTop: 10,
                 }}>
                 <Text style={[styles.termsTxt, {paddingTop: 3}]}>
-                  {'The code is valid for the next'}
+                  {'The code is valid for the next '}
                 </Text>
 
                 <CountDown

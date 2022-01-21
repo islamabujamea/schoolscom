@@ -34,13 +34,13 @@ export default class SignUpForm extends Component {
     this.state = {
       email: '',
       emailErr: false,
-      emailErrTxt: 'Incorrect email format',
+      emailErrTxt: '',
       name: '',
       nameErr: false,
-      nameErrTxt: 'Full name must be at least 2 characters',
+      nameErrTxt: '',
       password: '',
       passErr: false,
-      passErrTxt: 'Password must be have at least 6 characters long',
+      passErrTxt: 'Password must have at least 6 characters',
       showEye: false,
       checked: false,
       error: false,
@@ -62,24 +62,40 @@ export default class SignUpForm extends Component {
     if (text != '') {
       if (reg.test(text) === false) {
         console.log('Email is Not Correct');
-        this.setState({emailErr: true});
+        this.setState({emailErr: true, emailErrTxt: 'Incorrect email format'});
         return false;
       } else {
         this.setState({emailErr: false});
         console.log('Email is Correct');
       }
+    } else {
+      this.setState({
+        emailErr: true,
+        emailErrTxt: 'Email cannot be blank',
+      });
     }
   }
 
   validateName() {
     var text = this.state.name;
-    console.log(text.length);
+    var isArabic = /[\u0600-\u06FF\u0750-\u077F]/;
+    var isEnglish = /^(?:[A-Za-z]+)$/;
     if (text != '') {
-      if (text.length >= 2 && text.length < 50) {
-        this.setState({nameErr: false});
-        return false;
+      if (!isEnglish.test(text)) {
+        this.setState({
+          nameErr: true,
+          nameErrTxt: 'Full Name can only contain alphabet letters',
+        });
       } else {
-        this.setState({nameErr: true});
+        if (text.length >= 2 && text.length < 50) {
+          this.setState({nameErr: false});
+          return false;
+        } else {
+          this.setState({
+            nameErr: true,
+            nameErrTxt: 'Full name must be at least 2 characters',
+          });
+        }
       }
     }
   }
@@ -129,7 +145,7 @@ export default class SignUpForm extends Component {
           showProgress: !this.state.showProgress,
           error: res.message.error,
         });
-        await AsyncStorage.setItem('@eKard:userId', res.user.id.toString());
+        await AsyncStorage.setItem('@eKard:uId', res.user.id.toString());
         ToastAndroid.show(res.message.desc, ToastAndroid.LONG);
         this.props.navigation.navigate('Verification');
       }
@@ -172,6 +188,7 @@ export default class SignUpForm extends Component {
                       regular: {
                         fontFamily: 'Poppins-Regular',
                         fontSize: 16,
+                        padding: 0,
                       },
                     },
                   }}
@@ -266,7 +283,7 @@ export default class SignUpForm extends Component {
                       onPress={() => {
                         this.setState({showEye: !this.state.showEye});
                       }}
-                      color={blue}
+                      color={gray}
                     />
                   }
                 />
@@ -364,11 +381,13 @@ const styles = StyleSheet.create({
     width: width * 0.9,
     alignSelf: 'center',
     paddingTop: 20,
+    // backgroundColor: 'red',
   },
   title: {
     fontSize: 22,
     fontFamily: BoldFont,
-    padding: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   termsTxt: {
     fontSize: 10,
@@ -376,19 +395,24 @@ const styles = StyleSheet.create({
     color: gray,
   },
   InputView: {
-    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    width: width * 0.9,
   },
   Icon: {
-    marginTop: 5,
+    // marginTop: 5,
+    // borderBottomWidth: 1,
+    // borderBottomColor: gray,
+    // paddingBottom: 63,
+    width: width * 0.07,
   },
   TextInput: {
     backgroundColor: white,
-    flex: 1,
+    // flex: 1,
     fontSize: 16,
-    width: '100%',
+    // width: '80%',
+    width: width * 0.83,
   },
   checkTxt: {
     flexShrink: 1,
@@ -401,11 +425,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   helperTxt: {
-    marginLeft: 10,
+    marginLeft: 22,
     fontFamily: RegularFont,
   },
   viewMargin: {
-    marginVertical: 3,
+    // marginVertical: 3,
   },
   flex: {
     flex: 1,
