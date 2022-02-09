@@ -1,4 +1,4 @@
-package com.ekard;
+package com.schoolscom;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
